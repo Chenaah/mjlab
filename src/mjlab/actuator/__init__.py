@@ -36,6 +36,10 @@ from mjlab.actuator.learned_actuator import LearnedMlpActuator as LearnedMlpActu
 from mjlab.actuator.learned_actuator import (
   LearnedMlpActuatorCfg as LearnedMlpActuatorCfg,
 )
+from mjlab.actuator.pd_actuator import CybergearPdActuator as CybergearPdActuator
+from mjlab.actuator.pd_actuator import (
+  CybergearPdActuatorCfg as CybergearPdActuatorCfg,
+)
 from mjlab.actuator.pd_actuator import IdealPdActuator as IdealPdActuator
 from mjlab.actuator.pd_actuator import IdealPdActuatorCfg as IdealPdActuatorCfg
 from mjlab.actuator.xml_actuator import XmlMotorActuator as XmlMotorActuator

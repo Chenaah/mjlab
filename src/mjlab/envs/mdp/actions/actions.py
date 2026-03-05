@@ -32,6 +32,15 @@ class BaseActionCfg(ActionTermCfg):
   offset: float | dict[str, float] = 0.0
   """Action offset. Float or dict mapping actuator names to offsets."""
 
+  clip_raw: tuple[float, float] | None = None
+  """Optional (min, max) to clip raw actions before applying scale/offset.
+
+  This is useful for matching environments that enforce action bounds
+  (e.g. MetaMachine's ``symmetric_limit``).  When set, raw actions are
+  clamped to ``[clip_raw[0], clip_raw[1]]`` before the affine transform
+  ``processed = raw * scale + offset`` is applied.
+  """
+
   preserve_order: bool = False
   """Whether to preserve the order of actuator names."""
 
@@ -143,8 +152,10 @@ class BaseAction(ActionTerm):
     return self._target_names
 
   def process_actions(self, actions: torch.Tensor):
-    """Process raw actions by applying scale and offset."""
+    """Process raw actions by applying optional clip, then scale and offset."""
     self._raw_actions[:] = actions
+    if self.cfg.clip_raw is not None:
+      self._raw_actions.clamp_(self.cfg.clip_raw[0], self.cfg.clip_raw[1])
     self._processed_actions = self._raw_actions * self._scale + self._offset
 
   def reset(self, env_ids: torch.Tensor | slice | None = None) -> None:
